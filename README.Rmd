@@ -1,0 +1,48 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# geniscrape
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of geniscrape is to scrape genealogies and lineages from Geni.com in an efficient an easy way. 
+
+## Installation
+
+You can install the development version of geniscrape like so:
+
+``` r
+library(devtools)
+install_github("basm92/geniscrape")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(geniscrape)
+compute_family_df("https://www.geni.com/people/Lucas-Brouwer/6000000037332972722")
+```
+
+There are also two pre-loaded datasets by Moes (2012) included: 
+
+```{r cars}
+lijst_elite_moes
+
+lijst_hoogst_aangeslagenen
+```
+
