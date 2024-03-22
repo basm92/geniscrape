@@ -4,6 +4,8 @@
 # geniscrape
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/basm92/geniscrape/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/basm92/geniscrape/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of geniscrape is to scrape genealogies and lineages from
