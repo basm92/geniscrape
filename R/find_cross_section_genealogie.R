@@ -11,10 +11,10 @@ find_cross_section_genealogie <- function(place, begin_year, end_year){
   place_name <- paste0('pn=', place)
   begin_yr <- paste0('gv=', begin_year)
   end_yr <- paste0('gt=', end_year)
-  
+
   start_url <- paste(base_url, place_name, begin_yr, end_yr, '&ta=100', sep='&')
   ses <- session(start_url)
-  
+
   while_condition <- TRUE
   url <- start_url
   while (while_condition) {
@@ -25,25 +25,31 @@ find_cross_section_genealogie <- function(place, begin_year, end_year){
       # Change the condition to exit the loop
       while_condition <- FALSE
       url <- url[1:length(url)-1]
+      print("Finished.")
       }
-      
+
   names_and_links <- map(url, extract_from_url)
-  return(names_and_links)
+
+  }
+  # Clean the names and links
+  names <- names_and_links |> map(~ .x |> pluck(1)) |> reduce(c)
+  links <- names_and_links |> map(~ .x |> pluck(2)) |> reduce(c)
+  return(tibble(names=names, links=links))
 }
 
 # Helper
 extract_from_url <- function(url){
-  
+
   links_and_data <- read_html_live(url) |>
     html_elements('div.col-md-8 ul.nicelist li') |>
-    html_element('a') 
-  
+    html_element('a')
+
   names <- links_and_data |>
     html_text2()
-  
+
   links <- links_and_data |>
     html_attr('href')
-  
+
   return(list("names"=names, "links"=links))
-  
+
 }
