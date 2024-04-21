@@ -23,7 +23,7 @@ find_cross_section_wiewaswie <- function(place, year, sleep_time=1, type="Geboor
     # Filter on the children only
     test$click(css="div.search-facets input[ng-value*='FacetRol']")
     test$click(css="li.ng-scope[data-value*='Kind']")
-  }
+    }
   if(type == "Huwelijken"){
     test$click(css="div.search-facets input[ng-value*='DocumentType']")
     test$click(css="li.ng-scope[data-value*='BS Huwelijk']")
@@ -31,12 +31,15 @@ find_cross_section_wiewaswie <- function(place, year, sleep_time=1, type="Geboor
     # Filter on the children only
     test$click(css="div.search-facets input[ng-value*='FacetRol']")
     test$click(css="li.ng-scope[data-value*='Bruidegom']")
-  }
+    }
   if(type == "Overleden"){
-
-
-
-  }
+    test$click(css="div.search-facets input[ng-value*='DocumentType']")
+    test$click(css="li.ng-scope[data-value*='BS Overlijden']")
+    Sys.sleep(sleep_time)
+    # Filter on the children only
+    test$click(css="div.search-facets input[ng-value*='FacetRol']")
+    test$click(css="li.ng-scope[data-value*='Overledene']")
+    }
   # Loop over pages and over entries within pages
   # How many entries are there on this page?
   url_identifiers <- list()
@@ -74,9 +77,12 @@ find_cross_section_wiewaswie <- function(place, year, sleep_time=1, type="Geboor
   }
 
   # Given a list of url identifiers, scrape the info for each of them
-  out <- map(url_identifiers, get_info_from_geboorte)
+  if(type=="Geboortes"){out <- map(url_identifiers, get_info_from_geboorte)}
+  if(type=="Huwelijken"){out <- map(url_identifiers, get_info_from_huwelijk)}
+  if(type=="Overlijden"){out <- map(url_identifiers, get_info_from_overlijden)}
 
   return(out)
+
 }
 
 # Helper: get_info_from_geboorte
@@ -118,9 +124,78 @@ get_info_from_geboorte <- function(url_identifier, sleep_time=0.5){
   return(out)
 }
 
-testerinho2 <- find_cross_section_wiewaswie("Rijssen", "1817")
-# session(url, userAgent = user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"))
+url_identifier <- "21298309"
+# Helper: get_info_from_huwelijk
+get_info_from_huwelijk <- function(url_identifier, sleep_time=0.5){
+  real_url <- paste0('https://www.wiewaswie.nl/nl/detail/', url_identifier)
+  page <- read_html(real_url)
+  # Left side
+  left <- page |>
+    html_elements('div.left-column')
+  variables_left <- left |>
+    html_elements('div.person dl.dl-horizontal dt') |>
+    html_text2()
+  values_left <- left |>
+    html_elements('div.person dl.dl-horizontal dd') |>
+    html_text2()
+  # Right side
+  right <- page |>
+    html_elements('div.right-column')
+  variables_right <- right |>
+    html_elements('dl.dl-horizontal dt') |>
+    html_text2()
+  values_right <- right |>
+    html_elements('dl.dl-horizontal dd') |>
+    html_text2()
+  # Mariage parents
+  huwelijk_ouders_bruidegom_url <- page |>
+    html_elements('a:contains("Huw. ouders bruidegom")') |>
+    html_attr('href')
+  huwelijk_ouders_bruid_url <- page |>
+    html_elements('a:contains("Huw. ouders bruid")') |>
+    html_attr('href')
+  huwelijk_ouders_bruid_url <- huwelijk_ouders_bruid_url[!is.element(huwelijk_ouders_bruid_url, huwelijk_ouders_bruidegom_url)]
+  # Children
+  kinderen <- page |>
+    html_elements('a:contains("Geboorte kind")') |>
+    html_attr('href')
+  # Marriages of children
+  huwelijk_kinderen <- page |>
+    html_elements('a:contains("Huwelijk dochter"), a:contains("Huwelijk zoon")') |>
+    html_attr('href')
 
-rijssen_1815_1817 <- c(out, testerinho, testerinho2) |>
-  map(~ pivot_wider(.x,names_from= var, values_from=val)) |>
-  bind_rows()
+  # Put everything together
+  left_out <- tibble(var=variables_left,
+                     val=values_left)
+
+  right_out <- tibble(var=variables_right,
+                      val=values_right)
+
+  huwelijk_ouders_bruidegom_out <- tibble(var="Huwelijk ouders bruidegom URL", val=huwelijk_ouders_bruidegom_url)
+  huwelijk_ouders_bruid_out <- tibble(var="Huwelijk ouders bruid URL", val=huwelijk_ouders_bruid_url)
+  huwelijk_kinderen_out <- tibble(var="Huwelijk kind", val=huwelijk_kinderen)
+  out <- bind_rows(left_out,
+                   right_out,
+                   huwelijk_ouders_bruidegom_out,
+                   huwelijk_ouders_bruid_out,
+                   huwelijk_kinderen_out)
+  out <- out |>
+    mutate(var = case_when(
+      var == "Beroep" & row_number() == (which(var == "Moeder van de bruidegom") + 1) ~ "Beroep Moeder Bruidegom",
+      var == "Beroep" & row_number() == (which(var == "Moeder van de bruid") + 1) ~ "Beroep Moeder Bruid",
+      var == "Beroep" & row_number() == (which(var == "Vader van de bruidegom") + 1) ~ "Beroep Vader Bruidegom",
+      var == "Beroep" & row_number() == (which(var == "Vader van de bruid") + 1) ~ "Beroep Vader Bruid",
+      var == "Beroep" & row_number() < which(var == "Bruid") ~ "Beroep Bruidegom",
+      var == "Geboorteplaats" & row_number() < which(var == "Bruid")  ~ "Geboorteplaats Bruidegom",
+      var == "Leeftijd" & row_number() < which(var == "Bruid") ~ "Leeftijd Bruidegom",
+      var == "Beroep" & !(row_number() < which(var == "Bruid")) ~ "Beroep Bruid",
+      var == "Geboorteplaats" & !(row_number() < which(var == "Bruid")) ~ "Geboorteplaats Bruid",
+      var == "Leeftijd" & !(row_number() < which(var == "Bruid"))~ "Leeftijd Bruid",
+      TRUE ~ var)
+      )
+  Sys.sleep(sleep_time)
+  return(out)
+}
+
+# Helper: get info from overlijden
+## Write tomorrow
