@@ -179,20 +179,27 @@ get_info_from_huwelijk <- function(url_identifier, sleep_time=0.5){
                    huwelijk_ouders_bruidegom_out,
                    huwelijk_ouders_bruid_out,
                    huwelijk_kinderen_out)
+
   out <- out |>
     mutate(var = case_when(
-      var == "Beroep" & row_number() == (which(var == "Moeder van de bruidegom") + 1) ~ "Beroep Moeder Bruidegom",
-      var == "Beroep" & row_number() == (which(var == "Moeder van de bruid") + 1) ~ "Beroep Moeder Bruid",
-      var == "Beroep" & row_number() == (which(var == "Vader van de bruidegom") + 1) ~ "Beroep Vader Bruidegom",
-      var == "Beroep" & row_number() == (which(var == "Vader van de bruid") + 1) ~ "Beroep Vader Bruid",
-      var == "Beroep" & row_number() < which(var == "Bruid") ~ "Beroep Bruidegom",
-      var == "Geboorteplaats" & row_number() < which(var == "Bruid")  ~ "Geboorteplaats Bruidegom",
-      var == "Leeftijd" & row_number() < which(var == "Bruid") ~ "Leeftijd Bruidegom",
-      var == "Beroep" & !(row_number() < which(var == "Bruid")) ~ "Beroep Bruid",
-      var == "Geboorteplaats" & !(row_number() < which(var == "Bruid")) ~ "Geboorteplaats Bruid",
-      var == "Leeftijd" & !(row_number() < which(var == "Bruid"))~ "Leeftijd Bruid",
-      TRUE ~ var)
-      )
+      var == "Beroep" & row_number() == ifelse(length(which(var == "Moeder van de bruidegom")) > 0, (which(var == "Moeder van de bruidegom") + 1), NA) ~ "Beroep Moeder Bruidegom",
+      var == "Beroep" & row_number() == ifelse(length(which(var == "Moeder van de bruid")) > 0, (which(var == "Moeder van de bruid") + 1), NA) ~ "Beroep Moeder Bruid",
+      var == "Beroep" & row_number() == ifelse(length(which(var == "Vader van de bruidegom")) > 0, (which(var == "Vader van de bruidegom") + 1), NA) ~ "Beroep Vader Bruidegom",
+      var == "Beroep" & row_number() == ifelse(length(which(var == "Vader van de bruid")) > 0, (which(var == "Vader van de bruid") + 1), NA) ~ "Beroep Vader Bruid",
+      var == "Beroep" & row_number() < ifelse(length(which(var == "Bruid")) > 0, which(var == "Bruid"), NA) ~ "Beroep Bruidegom",
+      var == "Geboorteplaats" & row_number() < ifelse(length(which(var == "Bruid")) > 0, which(var == "Bruid"), NA) ~ "Geboorteplaats Bruidegom",
+      var == "Leeftijd" & row_number() < ifelse(length(which(var == "Bruid")) > 0, which(var == "Bruid"), NA) ~ "Leeftijd Bruidegom",
+      var == "Beroep" & !(row_number() < ifelse(length(which(var == "Bruid")) > 0, which(var == "Bruid"), NA)) ~ "Beroep Bruid",
+      var == "Geboorteplaats" & !(row_number() < ifelse(length(which(var == "Bruid")) > 0, which(var == "Bruid"), NA)) ~ "Geboorteplaats Bruid",
+      var == "Leeftijd" & !(row_number() < ifelse(length(which(var == "Bruid")) > 0, which(var == "Bruid"), NA)) ~ "Leeftijd Bruid",
+      TRUE ~ var
+    ))
+
+  out <- out |>
+    mutate(var = if_else(var == "Huwelijk kind",
+                         paste0(var, " ", row_number() - which(var == "Huwelijk kind")[1] + 1),
+                         var))
+
 
   Sys.sleep(sleep_time)
   return(out)
