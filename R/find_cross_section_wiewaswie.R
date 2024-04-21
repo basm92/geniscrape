@@ -52,6 +52,7 @@ find_cross_section_wiewaswie <- function(place, year, sleep_time=1, type="Geboor
       length()
 
     for(i in 1:how_many_on_page){
+      Sys.sleep(0.5)
       selector <- paste0('div.row-toggle.ng-scope:nth-of-type(', i, ')', collapse = '')
       # Click an entry
       test$click(css=selector)
@@ -124,7 +125,6 @@ get_info_from_geboorte <- function(url_identifier, sleep_time=0.5){
   return(out)
 }
 
-url_identifier <- "21298309"
 # Helper: get_info_from_huwelijk
 get_info_from_huwelijk <- function(url_identifier, sleep_time=0.5){
   real_url <- paste0('https://www.wiewaswie.nl/nl/detail/', url_identifier)
@@ -193,6 +193,7 @@ get_info_from_huwelijk <- function(url_identifier, sleep_time=0.5){
       var == "Leeftijd" & !(row_number() < which(var == "Bruid"))~ "Leeftijd Bruid",
       TRUE ~ var)
       )
+
   Sys.sleep(sleep_time)
   return(out)
 }
