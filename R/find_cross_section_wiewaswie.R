@@ -32,7 +32,7 @@ find_cross_section_wiewaswie <- function(place, year, sleep_time=1, type="Geboor
     test$click(css="div.search-facets input[ng-value*='FacetRol']")
     test$click(css="li.ng-scope[data-value*='Bruidegom']")
     }
-  if(type == "Overleden"){
+  if(type == "Overlijden"){
     test$click(css="div.search-facets input[ng-value*='DocumentType']")
     test$click(css="li.ng-scope[data-value*='BS Overlijden']")
     Sys.sleep(sleep_time)
