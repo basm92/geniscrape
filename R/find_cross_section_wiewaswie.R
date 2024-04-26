@@ -82,6 +82,10 @@ find_cross_section_wiewaswie <- function(place, year, sleep_time=1, type="Geboor
   if(type=="Huwelijken"){out <- map(url_identifiers, get_info_from_huwelijk)}
   if(type=="Overlijden"){out <- map(url_identifiers, get_info_from_overlijden)}
 
+  # Pivot the stuff to a data.frame
+  out <- out |>
+    map(~ pivot_wider(.x, names_from=var, values_from = val)) |>
+    bind_rows()
   return(out)
 
 }
@@ -120,7 +124,8 @@ get_info_from_geboorte <- function(url_identifier, sleep_time=0.5){
                       val=values_right)
 
   huwelijk_ouders_out <- tibble(var="Huwelijk ouders URL", val=huwelijk_ouders_url)
-  out <- bind_rows(left_out, right_out, huwelijk_ouders_out)
+  url_df <- tibble(var="URL", val=real_url)
+  out <- bind_rows(left_out, right_out, huwelijk_ouders_out, url_df)
   # Mutate the Profession if there
   out <- out |>
     mutate(var = case_when(var == "Beroep" & row_number() < ifelse(length(which(var == "Moeder")) > 0, which(var == "Moeder"), NA)~ "Beroep Vader",
@@ -179,11 +184,13 @@ get_info_from_huwelijk <- function(url_identifier, sleep_time=0.5){
   huwelijk_ouders_bruidegom_out <- tibble(var="Huwelijk ouders bruidegom URL", val=huwelijk_ouders_bruidegom_url)
   huwelijk_ouders_bruid_out <- tibble(var="Huwelijk ouders bruid URL", val=huwelijk_ouders_bruid_url)
   huwelijk_kinderen_out <- tibble(var="Huwelijk kind", val=huwelijk_kinderen)
+  url_df <- tibble(var="URL", val=real_url)
   out <- bind_rows(left_out,
                    right_out,
                    huwelijk_ouders_bruidegom_out,
                    huwelijk_ouders_bruid_out,
-                   huwelijk_kinderen_out)
+                   huwelijk_kinderen_out,
+                   url_df)
 
   out <- out |>
     mutate(var = case_when(
@@ -232,10 +239,6 @@ get_info_from_overlijden <- function(url_identifier, sleep_time=0.5){
   values_right <- right |>
     html_elements('dl.dl-horizontal dd') |>
     html_text2()
-  # Mariage parents
-  huwelijk_ouders_url <- page |>
-    html_elements('a:contains("Huwelijk ouders")') |>
-    html_attr('href')
   # Put everything together
   left_out <- tibble(var=variables_left,
                      val=values_left)
@@ -243,9 +246,11 @@ get_info_from_overlijden <- function(url_identifier, sleep_time=0.5){
   right_out <- tibble(var=variables_right,
                       val=values_right)
 
-  huwelijk_ouders_out <- tibble(var="Huwelijk ouders URL", val=huwelijk_ouders_url)
-  out <- bind_rows(left_out, right_out, huwelijk_ouders_out)
+  url_df <- tibble(var="URL", val=real_url)
+  out <- bind_rows(left_out, right_out, url_df)
   Sys.sleep(sleep_time)
   return(out)
 }
-## Write tomorrow
+
+# example:
+test5 <- find_cross_section_wiewaswie("Hellendoorn", "1850", type="Overleden")
