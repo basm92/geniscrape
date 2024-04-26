@@ -29,4 +29,5 @@ geni_find_ancestors_descendants <- function(url, kind="ancestors", n) {
   compute_single_ancestor(url, n)
 }
 
-geni_find_ancestors_descendants('https://www.geni.com/people/Pieter-Philip-van-Bosse/6000000018084773203', n = 2)
+#example
+#geni_find_ancestors_descendants('https://www.geni.com/people/Pieter-Philip-van-Bosse/6000000018084773203', n = 2)
