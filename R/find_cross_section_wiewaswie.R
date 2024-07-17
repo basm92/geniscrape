@@ -253,4 +253,4 @@ get_info_from_overlijden <- function(url_identifier, sleep_time=0.5){
 }
 
 # example:
-test5 <- find_cross_section_wiewaswie("Hellendoorn", "1850", type="Overleden")
+test <- find_cross_section_wiewaswie("Hellendoorn", "1850", type="Overleden")

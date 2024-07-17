@@ -52,12 +52,20 @@ lijst_hoogst_aangeslagenen
   “blocking variables”
 
   - Same thing for other websites
+  - Also, define a pecking order in terms of searching: first exact
+    match, then non-exact match based on a looser string, etc. etc.
+  - Aantal kandidaten die tevoorschijn komen afwegen tegen verder gaan
+    in de pecking order
+  - Empirisch onderzoeken welke variabelen de beste blocking variables
+    zijn op basis van al gemaakte links
 
 - Create a function that, given a name, looks for candidates at all
   three (four) websites genealogieonline.nl, openarch.nl, geni.com and
   wiewaswie.nl
 
   - Work with complex interactions due to e.g. aristocrat names
+  - Potentially work with embeddings (like BERTje) to find similar names
+    according to vector distance
 
 - Implement a geni URL function to start from a list of geni.com URLS
   and retrieve a data.frame
@@ -69,6 +77,8 @@ lijst_hoogst_aangeslagenen
 
 - Implement a general method to match a geni profile to wiewaswie data
   (geboorten, overlijden, huwelijksactes)
+
+- Interface harmonize
 
 - Maurits:
 
