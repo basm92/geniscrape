@@ -27,46 +27,63 @@ This is a basic example which shows you how to solve a common problem:
 ``` r
 library(geniscrape)
 compute_family_df("https://www.geni.com/people/Lucas-Brouwer/6000000037332972722")
-#> # A tibble: 3 × 6
-#>   url                                   birthdate deathdate pob   pod   relation
-#>   <chr>                                 <chr>     <chr>     <chr> <chr> <chr>   
-#> 1 https://www.geni.com/people/Maria-Br… Septembe… October … Alme… ""    Childre…
-#> 2 https://www.geni.com/people/Barend-B… June 14,… February… Alme… "Arn… Childre…
-#> 3 https://www.geni.com/people/Grietje-… August 0… March 07… Vrie… "Alm… Spouse
 ```
 
 There are also two pre-loaded datasets by Moes (2012) included:
 
 ``` r
 lijst_elite_moes
-#> # A tibble: 272 × 3
-#>    last_names              prefixes intensity
-#>    <chr>                   <chr>        <dbl>
-#>  1 Ablaing van Giessenburg d'               1
-#>  2 Büchner                 <NA>             1
-#>  3 Akerlaken               Van              1
-#>  4 Bultman                 <NA>             1
-#>  5 Alberda van Ekenstein   <NA>             4
-#>  6 Bylandt                 Van              5
-#>  7 Alphen                  Van              1
-#>  8 Carsten                 <NA>             2
-#>  9 Andringa de Kempenaer   Van              5
-#> 10 Casembroot              De               2
-#> # ℹ 262 more rows
 
 lijst_hoogst_aangeslagenen
-#> # A tibble: 4,738 × 6
-#>    first_names    last_names              prefixes dob     pob   place_of_living
-#>    <chr>          <chr>                   <chr>    <chr>   <chr> <chr>          
-#>  1 Johannes Eliza Aa Criellaert           van der  18 nov… Rott… Rotterdam      
-#>  2 Josua          Aa Criellaert           van der  8 apri… Rott… Rotterdam      
-#>  3 Cornelis       Aarden                  <NA>     26 feb… Wouw  Standaardbuiten
-#>  4 Gijsbert       Aardenne                van      10 maa… Dord… Dordrecht      
-#>  5 Antonie        Abbema                  <NA>     18 sep… 's-H… 's-Hertogenbos…
-#>  6 Abel           Abbring                 <NA>     7 augu… Beem… Rasquert (Baflo
-#>  7 J.D.C.C.W      Ablaing van Giessenburg baron d  4 janu… Utre… Doorn          
-#>  8 Willem Jan     Ablaing van Giessenburg baron d  1 juli… Amst… 's-Gravenhage  
-#>  9 Taede Ruurds   Abma                    <NA>     30 jan… Fols… Folsgare       
-#> 10 Geerd Hendriks Addens                  <NA>     2 okto… Bell… Bellingewolde  
-#> # ℹ 4,728 more rows
 ```
+
+## To do:
+
+- Write a script contacting the API from openarch.nl
+
+- Make links between different types of documents on wiewaswie.nl
+
+  - E.g. go from marriage records to births: easy if there is a link,
+    difficult if there is not
+  - Implement `find_marriage_from_birth_wiewaswie` and
+    `find_children_from_marriage_wiewaswie`
+
+- Implement a name searching function on wiewaswie.nl based on some
+  “blocking variables”
+
+  - Same thing for other websites
+
+- Create a function that, given a name, looks for candidates at all
+  three (four) websites genealogieonline.nl, openarch.nl, geni.com and
+  wiewaswie.nl
+
+  - Work with complex interactions due to e.g. aristocrat names
+
+- Implement a geni URL function to start from a list of geni.com URLS
+  and retrieve a data.frame
+
+- Implement a general method for fuzzy (uncertain) matching on wiewaswie
+  based on empirics, e.g. age difference and (distance to) birthplace
+
+  - Gather train data from prelabelled matches
+
+- Implement a general method to match a geni profile to wiewaswie data
+  (geboorten, overlijden, huwelijksactes)
+
+- Maurits:
+
+  - Install and have a look at `rvest`
+  - Make sure `read_html_live()` works and you have the `chromote`
+    package
+  - Set up a Github account for collaboration
+  - Important resources to browse through:
+    [Github](https://floswald.github.io/ScPoProgramming/05-git.html#/title-slide)
+    and [R Package
+    Development](https://floswald.github.io/ScPoProgramming/05-git.html#/title-slide)
+
+- Research oriented:
+
+  - Find a professional index on the basis of mariage records
+  - Find fertility measures
+  - Classify names to a religion on the basis of empirics
+  - Study politicians’ family links across $n$ generations

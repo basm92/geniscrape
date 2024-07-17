@@ -6,6 +6,7 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval= FALSE, # Uncomment to run code
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
@@ -46,4 +47,33 @@ lijst_elite_moes
 
 lijst_hoogst_aangeslagenen
 ```
+
+## To do:
+
+- Write a script contacting the API from openarch.nl
+- Make links between different types of documents on wiewaswie.nl
+  - E.g. go from marriage records to births: easy if there is a link, difficult if there is not
+  - Implement `find_marriage_from_birth_wiewaswie` and `find_children_from_marriage_wiewaswie`
+- Implement a name searching function on wiewaswie.nl based on some "blocking variables"
+  - Same thing for other websites
+- Create a function that, given a name, looks for candidates at all three (four) websites genealogieonline.nl, openarch.nl, geni.com and wiewaswie.nl
+  - Work with complex interactions due to e.g. aristocrat names
+- Implement a geni URL function to start from a list of geni.com URLS and retrieve a data.frame
+- Implement a general method for fuzzy (uncertain) matching on wiewaswie based on empirics, e.g. age difference and (distance to) birthplace
+  - Gather train data from prelabelled matches
+- Implement a general method to match a geni profile to wiewaswie data (geboorten, overlijden, huwelijksactes)
+
+- Maurits:
+  - Install and have a look at `rvest`
+  - Make sure `read_html_live()` works and you have the `chromote` package
+  - Set up a Github account for collaboration
+  - Important resources to browse through: [Github](https://floswald.github.io/ScPoProgramming/05-git.html#/title-slide) and [R Package Development](https://floswald.github.io/ScPoProgramming/05-git.html#/title-slide)
+  
+- Research oriented: 
+  - Find a professional index on the basis of mariage records
+  - Find fertility measures
+  - Classify names to a religion on the basis of empirics
+  - Study politicians' family links across $n$ generations
+  
+  
 
