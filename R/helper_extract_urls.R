@@ -5,7 +5,7 @@
 #' @return URLs of Parents, Children, Siblings and Spouse(s)
 #'
 #' @examples extract_urls('https://www.geni.com/people/Guillame-le-Blanc-du-Bec-Seigneur-du-Bec/6000000008289847966')
-extract_urls <- function(link){
+helper_extract_urls <- function(link){
   # Read HTML Code
   html <- rvest::read_html(link)
 
