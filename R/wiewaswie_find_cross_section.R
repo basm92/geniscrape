@@ -92,6 +92,3 @@ wiewaswie_find_cross_section <- function(place, year, sleep_time=1, type="Geboor
   return(out)
 
 }
-
-# example:
-test <- find_cross_section_wiewaswie("Hellendoorn", "1850", type="Overlijden")
