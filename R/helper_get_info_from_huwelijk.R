@@ -1,7 +1,7 @@
 library(tidyverse); library(rvest)
 
 # Helper: get_info_from_huwelijk
-get_info_from_huwelijk <- function(url_identifier, sleep_time=0.5){
+helper_get_info_from_huwelijk <- function(url_identifier, sleep_time=0.5){
   real_url <- paste0('https://www.wiewaswie.nl/nl/detail/', url_identifier)
   page <- read_html(real_url)
   # Left side
