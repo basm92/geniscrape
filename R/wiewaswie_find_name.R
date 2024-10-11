@@ -32,31 +32,49 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
   Sys.sleep(sleep_time)
 
   while(while_condition) {
+    # How many results are on the page
     how_many_on_page <- name |>
       html_elements('div.row-toggle.ng-scope') |>
       length()
 
-    for (i in 1:how_many_on_page) {
-      Sys.sleep(0.5)
-      selector <- paste0('div.row-toggle.ng-scope:nth-of-type(', i, ')', collapse = '')
-      # Click an entry
-      name$click(css=selector)
-      # Extract the URL
-      frame <- name |>
-        html_elements("iframe[ng-src*='detail'")
-      url_identifier <- frame |>
-        html_attr('src') |>
-        str_extract("\\d+")
-      # Add to list
-      url_identifiers <- c(url_identifiers, url_identifier)
-      # Close entry
-      name$click(css=selector)
+    # No invalid selectors
+    if (how_many_on_page == 0) {
+      message("No entries found on this page.")
+      break
     }
 
-    # Move to the next page
-    while_condition <- length(name$html_elements('a[ng-click*="Page + 1"')) == 1
-    if (while_condition) {
-      name$click(css='a[ng-click*="Page + 1"')
+    for (i in 1:how_many_on_page) {
+      Sys.sleep(0.5)
+      selector <- paste0('div.row-toggle.ng-scope:nth-of-type(', i, ')')
+
+      # Check that element exists
+      if (length(name$html_elements(selector)) > 0) {
+        # Click an entry
+        name$click(css = selector)
+        # Extract the URL
+        frame <- name |>
+          html_elements("iframe[ng-src*='detail'")
+
+        if (length(frame) > 0) {
+          url_identifier <- frame |>
+            html_attr('src') |>
+            str_extract("\\d+")
+      # Add to list
+      url_identifiers <- c(url_identifiers, url_identifier)
+        }
+      # Close entry
+      name$click(css=selector)
+      } else {
+        message("Element not found for index: ", i)
+      }
+    }
+
+     # Move to the next page if the button exists
+    next_button_exists <- length(name$html_elements('a[ng-click*="Page + 1"')) == 1
+    if (next_button_exists) {
+      name$click(css = 'a[ng-click*="Page + 1"')
+    } else {
+      while_condition <- FALSE
     }
     Sys.sleep(1)
   }
@@ -71,6 +89,3 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
 
   return(out)
 }
-
-test <- wiewaswie_find_name(achternaam = "Rutte")
-test
