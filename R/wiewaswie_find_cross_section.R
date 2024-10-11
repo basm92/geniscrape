@@ -1,9 +1,5 @@
 # https://www.wiewaswie.nl/nl/zoeken/?advancedsearch=1
 library(rvest); library(tidyverse); library(httr)
-source("./R/helpers/wiewaswie_get_info_from_geboorte.R")
-source("./R/helpers/wiewaswie_get_info_from_huwelijk.R")
-source("./R/helpers/wiewaswie_get_info_from_overlijden.R")
-
 # Start Session
 wiewaswie_find_cross_section <- function(place, year, sleep_time=1, type="Geboortes"){
   # Test is a browser session
@@ -81,9 +77,9 @@ wiewaswie_find_cross_section <- function(place, year, sleep_time=1, type="Geboor
   }
 
   # Given a list of url identifiers, scrape the info for each of them
-  if(type=="Geboortes"){out <- map(url_identifiers, get_info_from_geboorte)}
-  if(type=="Huwelijken"){out <- map(url_identifiers, get_info_from_huwelijk)}
-  if(type=="Overlijden"){out <- map(url_identifiers, get_info_from_overlijden)}
+  if(type=="Geboortes"){out <- map(url_identifiers, helper_get_info_from_geboorte)}
+  if(type=="Huwelijken"){out <- map(url_identifiers, helper_get_info_from_huwelijk)}
+  if(type=="Overlijden"){out <- map(url_identifiers, helper_get_info_from_overlijden)}
 
   # Pivot the stuff to a data.frame
   out <- out |>

@@ -9,7 +9,7 @@
 compute_family_df <- function(start_url){
   if(!is.na(start_url)){
     # Extract the family members
-    family_members <- extract_urls(start_url)
+    family_members <- helper_extract_urls(start_url)
     # Filter the NA and clean
     family_members_clean <- purrr::map(family_members, purrr::discard, ~ length(.x) < 1)
     family_members_clean <- purrr::map(family_members_clean, purrr::discard, is.na)
