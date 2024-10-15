@@ -24,7 +24,32 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
   name$click(css="button[ng-click*='DoAdvancedSearch()']")
   Sys.sleep(sleep_time)
 
-  # Add option later: give users the option to refine (Verfijn resultaten)
+  # Apply filters if specified
+  if (!is.null(type)) {
+    name$click(css="div.search-facets input[ng-value*='DocumentType']")
+
+    if (type == "Geboortes") {
+      name$click(css="li.ng-scope[data-value*='BS Geboorte']")
+    } else if (type == "Huwelijken") {
+      name$click(css="li.ng-scope[data-value*='BS Huwelijk']")
+    } else if (type == "Overlijden") {
+      name$click(css="li.ng-scope[data-value*='BS Overlijden']")
+    }
+    Sys.sleep(sleep_time)
+  }
+
+  if (!is.null(role_filter)) {
+    name$click(css="div.search-facets input[ng-value*='FacetRol']")
+
+    if (role_filter == "Kind") {
+      name$click(css="li.ng-scope[data-value*='Kind']")
+    } else if (role_filter == "Bruidegom") {
+      name$click(css="li.ng-scope[data-value*='Bruidegom']")
+    } else if (role_filter == "Overledene") {
+      name$click(css="li.ng-scope[data-value*='Overledene']")
+    }
+    Sys.sleep(sleep_time)
+  }
 
   # Loop over pages and entries within pages
   url_identifiers <- list()
