@@ -16,8 +16,8 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
   if (!is.null(patroniem)) name$type(css="input[placeholder='Patroniem']", text = patroniem)
   if (!is.null(beroep)) name$type(css="input[placeholder='Beroep']", text = beroep)
   if (!is.null(rol)) name$type(css="input[placeholder='Rol']", text = rol)
-  if (!is.null(periode_start)) name$type(css="input[ng-model*='PeriodeVan']", text = year)
-  if (!is.null(periode_end)) name$type(css="input[ng-model*='PeriodeTot']", text = year)
+  if (!is.null(periode_start)) name$type(css="input[ng-model*='PeriodeVan']", text = periode_start)
+  if (!is.null(periode_end)) name$type(css="input[ng-model*='PeriodeTot']", text = periode_end)
   if (!is.null(land)) name$type(css="input[placeholder='Land']", text = land)
   if (!is.null(place)) name$type(css="input[placeholder='Plaats']", text = place)
 
@@ -77,7 +77,7 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
       if (length(name$html_elements(selector)) > 0) {
         # Click on the entry to open it
         name$click(css = selector)
-        Sys.sleep(0.5)  # Ensure page is loaded
+        Sys.sleep(0.5)
 
         # Extract the URL
         frame <- name |>
@@ -105,7 +105,7 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
 
     if (length(next_button) > 0) {
       name$click(css = 'a[ng-click*="Page + 1"]')
-      Sys.sleep(1)  # Allow time for the new page to load
+      Sys.sleep(1)
     } else {
       while_condition <- FALSE
     }
