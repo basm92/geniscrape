@@ -116,8 +116,17 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
 
   # Structure the output as a data frame (pivot to wide format)
   out <- out |>
-    map(~ pivot_wider(.x, names_from = var, values_from = val)) |>
-    bind_rows()
+    map(~ {
+      # Ensure the result is a tibble/data frame and not a list
+      if (is.list(.x)) {
+        # Convert any list elements to comma-separated strings if needed
+        .x <- map_if(.x, is.list, ~ paste(unlist(.x), collapse = ", "))
+      }
+
+      # Convert to a tibble and pivot if it isn't already a tibble
+      as_tibble(.x) |>
+        pivot_wider(names_from = var, values_from = val)
+    })
 
   return(out)
 }
