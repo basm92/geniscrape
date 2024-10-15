@@ -5,8 +5,8 @@ helper_get_info_from_url <- function(url_identifier, sleep_time = 0.5) {
 
   # Extract information from the page
   left <- page |> html_elements('div.left-column')
-  variables_left <- left |> html_elements('div.person dl.dl-horizontal dt') |> html_text2()
-  values_left <- left |> html_elements('div.person dl.dl-horizontal dd') |> html_text2()
+  variables_left <- left |> html_elements('dl.dl-horizontal dt') |> html_text2()
+  values_left <- left |> html_elements('dl.dl-horizontal dd') |> html_text2()
 
   right <- page |> html_elements('div.right-column')
   variables_right <- right |> html_elements('dl.dl-horizontal dt') |> html_text2()
