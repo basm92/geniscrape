@@ -86,7 +86,7 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
   }
 
   # Scrape the information from each URL
-  out <- map(url_identifiers, get_info_from_url)
+  out <- map(url_identifiers, helper_get_info_from_url)
 
   # Structure the output as a data frame (pivot to wide format)
   out <- out |>
