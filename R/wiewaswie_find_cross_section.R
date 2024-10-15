@@ -88,3 +88,6 @@ wiewaswie_find_cross_section <- function(place, year, sleep_time=1, type="Geboor
   return(out)
 
 }
+
+
+wiewaswie_find_cross_section(place = "Den Haag", year = "1860")
