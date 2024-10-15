@@ -4,7 +4,8 @@ library(rvest); library(tidyverse); library(httr)
 wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaam = NULL,
                                 patroniem = NULL, beroep = NULL, rol = NULL,
                                 periode_start = NULL, periode_end = NULL,
-                                land = NULL, place = NULL, sleep_time = 1) {
+                                land = NULL, place = NULL, type = NULL,
+                                role_filter = NULL, sleep_time = 1) {
   # Go to wiewaswie advanced search
   name <- read_html_live('https://www.wiewaswie.nl/nl/zoeken/?advancedsearch=1')
 

@@ -3,7 +3,7 @@ helper_get_info_from_url <- function(url_identifier, sleep_time = 0.5) {
   real_url <- paste0('https://www.wiewaswie.nl/nl/detail/', url_identifier)
   page <- read_html(real_url)
 
-  # Extract information from the page (similar to `helper_get_info_from_geboorte`)
+  # Extract information from the page
   left <- page |> html_elements('div.left-column')
   variables_left <- left |> html_elements('div.person dl.dl-horizontal dt') |> html_text2()
   values_left <- left |> html_elements('div.person dl.dl-horizontal dd') |> html_text2()
