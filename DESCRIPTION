@@ -12,12 +12,14 @@ RoxygenNote: 7.2.3
 LazyData: false
 Imports: 
     dplyr,
+    httr,
     lubridate,
     pdftools,
     purrr,
     readr,
     rlang,
     rvest,
+    stringi,
     stringr,
     tibble
 Suggests: 

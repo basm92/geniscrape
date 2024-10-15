@@ -4,6 +4,8 @@ library(rvest); library(tidyverse); library(httr)
 wiewaswie_find_cross_section <- function(place, year, sleep_time=1, type="Geboortes"){
   # Test is a browser session
   test <- read_html_live('https://www.wiewaswie.nl/nl/zoeken/?advancedsearch=1')
+  #test$view()
+  #test$session$close()
   # Start With Place Name
   test$type(css="input[placeholder='Plaats']", text = place)
 
@@ -15,6 +17,7 @@ wiewaswie_find_cross_section <- function(place, year, sleep_time=1, type="Geboor
   test$click(css="button[ng-click*='DoAdvancedSearch()']")
   Sys.sleep(sleep_time)
   # Filter on Births, Deaths or Marriages
+  ## Implement: Check if the desired category actually exists in the given place and year
   if(type == "Geboortes"){
     test$click(css="div.search-facets input[ng-value*='DocumentType']")
     test$click(css="li.ng-scope[data-value*='BS Geboorte']")
@@ -40,6 +43,7 @@ wiewaswie_find_cross_section <- function(place, year, sleep_time=1, type="Geboor
     test$click(css="li.ng-scope[data-value*='Overledene']")
     }
   # Loop over pages and over entries within pages
+  ## Implement: How many pages are there? If too many, split up
   # How many entries are there on this page?
   url_identifiers <- list()
   while_condition <- TRUE
