@@ -6,6 +6,7 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
                                 periode_start = NULL, periode_end = NULL,
                                 land = NULL, place = NULL, type = NULL,
                                 role_filter = NULL, sleep_time = 1) {
+
   # Go to wiewaswie advanced search
   name <- read_html_live('https://www.wiewaswie.nl/nl/zoeken/?advancedsearch=1')
 
@@ -127,6 +128,6 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
       as_tibble(.x) |>
         pivot_wider(names_from = var, values_from = val)
     })
-
+  out <- out |> bind_rows()
   return(out)
 }
