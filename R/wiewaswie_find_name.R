@@ -17,8 +17,8 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
   if (!is.null(patroniem)) name$type(css="input[placeholder='Patroniem']", text = patroniem)
   if (!is.null(beroep)) name$type(css="input[placeholder='Beroep']", text = beroep)
   if (!is.null(rol)) name$type(css="input[placeholder='Rol']", text = rol)
-  if (!is.null(periode_start)) name$type(css="input[ng-model*='PeriodeVan']", text = periode_start)
-  if (!is.null(periode_end)) name$type(css="input[ng-model*='PeriodeTot']", text = periode_end)
+  if (!is.null(periode_start)) name$type(css="input[ng-model*='PeriodeVan']", text = as.character(periode_start))
+  if (!is.null(periode_end)) name$type(css="input[ng-model*='PeriodeTot']", text = as.character(periode_end))
   if (!is.null(land)) name$type(css="input[placeholder='Land']", text = land)
   if (!is.null(place)) name$type(css="input[placeholder='Plaats']", text = place)
 
