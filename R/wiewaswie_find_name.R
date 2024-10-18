@@ -36,6 +36,10 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
       name$click(css="li.ng-scope[data-value*='BS Huwelijk']")
     } else if (type == "Overlijden") {
       name$click(css="li.ng-scope[data-value*='BS Overlijden']")
+    } else if (type == "DTB trouwen") {
+      name$click(css="li.ng-scope[data-value*='DTB Trouwen']")
+    } else if (type == "Familieadvertenties") {
+      name$click(css="li.ng-scope[data-value*='Familieadvertenties']")
     }
     Sys.sleep(sleep_time)
   }
@@ -116,18 +120,15 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
   out <- map(url_identifiers, helper_get_info_from_url)
 
   # Structure the output as a data frame (pivot to wide format)
-  out <- out |>
-    map(~ {
-      # Ensure the result is a tibble/data frame and not a list
-      if (is.list(.x)) {
-        # Convert any list elements to comma-separated strings if needed
-        .x <- map_if(.x, is.list, ~ paste(unlist(.x), collapse = ", "))
-      }
+  out <- map(out, ~ {
+    .x <- map_if(.x, is.list, ~ paste(unlist(.x), collapse = ", "))
+    as_tibble(.x)
+  })
 
-      # Convert to a tibble and pivot if it isn't already a tibble
-      as_tibble(.x) |>
-        pivot_wider(names_from = var, values_from = val)
-    }) |>
-    bind_rows()
+  # Structure the output as a data frame (pivot to wide format)
+  out <- out |>
+    bind_rows() |>
+    pivot_wider(names_from = var, values_from = val, values_fn = list(val = ~paste(unique(.), collapse = ", ")))
+
   return(out)
 }
