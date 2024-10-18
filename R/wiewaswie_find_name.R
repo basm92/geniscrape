@@ -116,19 +116,32 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
     }
   }
 
-  # Scrape the information from each URL
-  out <- map(url_identifiers, helper_get_info_from_url)
-
-  # Structure the output as a data frame (pivot to wide format)
-  out <- map(out, ~ {
-    .x <- map_if(.x, is.list, ~ paste(unlist(.x), collapse = ", "))
-    as_tibble(.x)
+  # Scrape the information from each URL based on the document type
+  out <- map(url_identifiers, function(url_identifier) {
+    if (!is.null(type) && type == "Familieadvertenties") {
+      return(helper_get_info_from_url(url_identifier))
+    } else if (!is.null(type) && type == "BS Geboorte") {
+      return(helper_get_info_from_geboorte(url_identifier))
+    } else if (!is.null(type) && type == "BS Huwelijk") {
+      return(helper_get_info_from_huwelijk(url_identifier))
+    } else {
+      return(helper_get_info_from_url(url_identifier))
+    }
   })
 
   # Structure the output as a data frame (pivot to wide format)
   out <- out |>
-    bind_rows() |>
-    pivot_wider(names_from = var, values_from = val, values_fn = list(val = ~paste(unique(.), collapse = ", ")))
+    map(~ {
+      # Ensure the result is a tibble/data frame and not a list
+      if (is.list(.x)) {
+        # Convert any list elements to comma-separated strings if needed
+        .x <- map_if(.x, is.list, ~ paste(unlist(.x), collapse = ", "))
+      }
 
+      # Convert to a tibble and pivot if it isn't already a tibble
+      as_tibble(.x) |>
+        pivot_wider(names_from = var, values_from = val)
+    })
+  out <- out |> bind_rows()
   return(out)
 }
