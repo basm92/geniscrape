@@ -127,7 +127,7 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
       # Convert to a tibble and pivot if it isn't already a tibble
       as_tibble(.x) |>
         pivot_wider(names_from = var, values_from = val)
-    })
-  out <- out |> bind_rows()
+    }) |>
+    bind_rows()
   return(out)
 }
