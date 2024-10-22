@@ -59,6 +59,7 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
 
   # Loop over pages and entries within pages
   url_identifiers <- list()
+  type_documents <- list()
   while_condition <- TRUE
   Sys.sleep(sleep_time)
 
@@ -80,6 +81,15 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
 
       # Check if the entry exists before clicking
       if (length(name$html_elements(selector)) > 0) {
+        # Get the type of document and write it to type_documents
+        if(!is.null(type)){
+          type_document <- name |>
+            html_elements(selector) |>
+            html_elements("div.col-md-2.ng-binding:nth-of-type(6)") |>
+            html_text2()
+          type_documents <- c(type_documents, type_document)
+        }
+
         # Click on the entry to open it
         name$click(css = selector)
         Sys.sleep(0.5)
@@ -117,17 +127,29 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
   }
 
   # Scrape the information from each URL based on the document type
-  out <- map(url_identifiers, function(url_identifier) {
-    if (!is.null(type) && type == "Familieadvertenties") {
-      return(helper_get_info_from_url(url_identifier))
-    } else if (!is.null(type) && type == "BS Geboorte") {
-      return(helper_get_info_from_geboorte(url_identifier))
-    } else if (!is.null(type) && type == "BS Huwelijk") {
-      return(helper_get_info_from_huwelijk(url_identifier))
-    } else {
-      return(helper_get_info_from_url(url_identifier))
-    }
-  })
+  ## This will become: pmap
+  if(!is.null(type)){
+    out <- map(url_identifiers, function(url_identifier) {
+       if (type == "BS Geboorte") {
+         return(helper_get_info_from_geboorte(url_identifier))
+      } else if (type == "BS Huwelijk") {
+        return(helper_get_info_from_huwelijk(url_identifier))
+      } else {
+        return(helper_get_info_from_url(url_identifier))
+      }
+    })
+
+  } else{
+        out <- pmap(url_identifiers, type_documents, function(url_identifier, type_document) {
+        if (str_detect(type_document, "BS Geboorte")) {
+          return(helper_get_info_from_geboorte(url_identifier))
+        } else if (str_detect(type_document, "BS Huwelijk")) {
+          return(helper_get_info_from_huwelijk(url_identifier))
+        } else {
+          return(helper_get_info_from_url(url_identifier))
+        }
+      })
+  }
 
   # Structure the output as a data frame (pivot to wide format)
   out <- out |>
@@ -145,3 +167,6 @@ wiewaswie_find_name <- function(achternaam = NULL, tussenvoegsel = NULL, voornaa
   out <- out |> bind_rows()
   return(out)
 }
+
+wiewaswie_find_name("Rutte", periode_start = 1900, periode_end = 1905)
+
